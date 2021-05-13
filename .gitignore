@@ -1,0 +1,7 @@
+/member/build/
+/common/build/
+/docker/redis/
+/.gradle/
+/node_modules/
+/api/src/main/resources/static/
+/api/build/

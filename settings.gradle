@@ -1,0 +1,4 @@
+rootProject.name = 'scouter-springboot-redis'
+include 'common'
+include 'api'
+
