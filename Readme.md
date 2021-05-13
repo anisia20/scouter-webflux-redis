@@ -18,3 +18,7 @@ java -jar build/lib/api.jar
 ## swagger
 url : http://localhost:8080/swagger-ui/
 
+## JWT
+id : admin
+pass : admin
+

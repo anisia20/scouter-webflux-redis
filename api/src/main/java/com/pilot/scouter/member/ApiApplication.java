@@ -6,6 +6,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import com.pilot.scouter.common.command.JsonCmd;
+import com.pilot.scouter.common.constants.RedisConstants;
+import com.pilot.scouter.common.model.redis.ClientDto;
+import com.pilot.scouter.config.redis.command.RedisCmd;
+import com.pilot.scouter.utils.ADMSHA512Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,6 +33,9 @@ public class ApiApplication {
     @Autowired
     JsonCmd jsonCmd;
 
+    @Autowired
+    RedisCmd redisCmd;
+
     static String ACCESS_LOG_ENABLED = "reactor.netty.http.server.accessLogEnabled";
     public static void main(String[] args) {
         if (System.getProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME) == null) {
@@ -45,6 +52,13 @@ public class ApiApplication {
     @PostConstruct
     public void onStartup() {
         log.info("################ System-up start ################");
+
+        //최초 아이디 admin admin
+        ClientDto tmp = new ClientDto();
+        tmp.setId("admin");
+        tmp.setPwd(ADMSHA512Hash.getDigest("admin"));
+        redisCmd.hput(RedisConstants.SCOUTER_H_CLIENT.key, "admin", tmp);
+
         try {
             InetAddress ip = InetAddress.getLocalHost();
             String hostname = ip.getHostName();

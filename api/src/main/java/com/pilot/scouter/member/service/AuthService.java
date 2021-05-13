@@ -65,13 +65,6 @@ public class AuthService {
         }
 
         // ID, PWD 체크
-        //TODO 회원가입 만들어야 함
-        ClientDto tmp = new ClientDto();
-        tmp.setId(ar.getId());
-        tmp.setPwd(ADMSHA512Hash.getDigest(ar.getPwd()));
-        redisCmd.hput(RedisConstants.SCOUTER_H_CLIENT.key, ar.getId(), tmp);
-        //
-
         ClientDto clientDetails = (ClientDto) redisCmd.hget(RedisConstants.SCOUTER_H_CLIENT.key, ar.getId());
         if (clientDetails == null) {
             log.debug("cannot found cliId. C={}, ip={}", ar.getId());
