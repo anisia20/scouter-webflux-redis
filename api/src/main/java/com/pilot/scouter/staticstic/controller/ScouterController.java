@@ -7,22 +7,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.http.codec.multipart.Part;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.Map;
 
 @Log4j2
-@Controller
-@RequestMapping("/front/scouter")
+@RestController
+@RequestMapping("/v1/scouter")
 public class ScouterController {
 
     /**
@@ -43,39 +44,23 @@ public class ScouterController {
      * @throws Exception
      */
 
-    //TODO: 여기 수정필요
-//    @PostMapping(value = "/file/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity FileUploadController(ServerHttpRequest req, ServerHttpResponse res,
-//                                               @RequestBody Flux<Part> parts) throws IOException {
-//
-//        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) req;
-//
-//        Map<String, MultipartFile> files = multiRequest.getFileMap();
-//
-//        int n_res = mApiService.TrnsInfo2Redis(files);
-//
-//        ResponseEntity result = null;
-//        if (n_res < 0) result = new ResponseEntity(HttpStatus.BAD_REQUEST);
-//        if (n_res == -10) result = new ResponseEntity(HttpStatus.BAD_REQUEST);
-//
-//
-//        return result;
-//    }
+    @PostMapping(value = "/file/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<Object> FileUploadController(
+            @RequestPart("files") Flux<FilePart> filePartFux)  {
+
+        int n_res = mApiService.TrnsInfo2Redis(filePartFux);
+
+
+        return Mono.just("");
+    }
 
     /**
      * Json 가져오기
      */
     @GetMapping("/scoutUpdate")
-    public ResponseEntity ScoutJsnController( ) {
-
-
-        int res_n = 1;
+    public Mono<Object>  ScoutJsnController( ) {
         scoutJsnService.insertScoutDt();
-
-        ResponseEntity result = null;
-        if (res_n < 0) result = new ResponseEntity(HttpStatus.BAD_REQUEST);
-        if (res_n == -10) result = new ResponseEntity(HttpStatus.BAD_REQUEST);
-        return result;
+        return Mono.just("");
     }
 
 
@@ -83,15 +68,8 @@ public class ScouterController {
      * Json 가져오기
      */
     @GetMapping("/scoutUpdateSql")
-    public ResponseEntity ScoutJsnSqlController() {
-
-
-        int res_n = 1;
+    public Mono<Object> ScoutJsnSqlController() {
         scoutJsnService.insertScoutDtSql();
-
-        ResponseEntity result = null;
-        if (res_n < 0) result = new ResponseEntity(HttpStatus.BAD_REQUEST);
-        if (res_n == -10) result = new ResponseEntity(HttpStatus.BAD_REQUEST);
-        return result;
+        return Mono.just("");
     }
 }

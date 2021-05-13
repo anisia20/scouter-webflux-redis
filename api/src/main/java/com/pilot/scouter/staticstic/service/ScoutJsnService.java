@@ -28,7 +28,7 @@ public class ScoutJsnService {
 
     private final WebClient webClient;
 
-    @Value("${scouter.url}")
+    @Value("${scouter.url:'127.0.0.1:6800'}")
     private String scouterUrl;
 
 

@@ -8,6 +8,7 @@ import com.pilot.scouter.common.config.ModelMapperG;
 import com.pilot.scouter.common.constants.RedisConstants;
 import com.pilot.scouter.common.util.UuidMaker;
 import com.pilot.scouter.config.redis.command.RedisCmd;
+import com.pilot.scouter.utils.AESCrytoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,11 @@ public class CommonResourceManager {
 
     @Autowired
     ModelMapperG modelMapper;
+
+    @Bean
+    public AESCrytoUtil getAEScrytoUtil(){
+        return new AESCrytoUtil();
+    }
 
     @Bean
     public UuidMaker getKeyMaker(){

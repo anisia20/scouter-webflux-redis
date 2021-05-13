@@ -2,6 +2,8 @@ package com.pilot.scouter.utils;
 
 
 
+import org.springframework.stereotype.Component;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -24,10 +26,15 @@ public class AESCrytoUtil {
      */
     final static String key = "secretsecretsecretsecret";
 
-    public AESCrytoUtil() throws UnsupportedEncodingException {
+    public AESCrytoUtil()  {
         this.iv = key.substring(0, 16);
         byte[] keyBytes = new byte[16];
-        byte[] b = key.getBytes("UTF-8");
+        byte[] b = new byte[0];
+        try {
+            b = key.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+           //
+        }
         int len = b.length;
         if (len > keyBytes.length) {
             len = keyBytes.length;
