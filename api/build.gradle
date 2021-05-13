@@ -101,6 +101,8 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
     testCompile('org.projectlombok:lombok')
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 dependencyManagement {
