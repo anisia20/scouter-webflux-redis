@@ -4,4 +4,5 @@
 /.gradle/
 /node_modules/
 /api/src/main/resources/static/
+/api/src/main/resources/application.yaml
 /api/build/
