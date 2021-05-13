@@ -7,8 +7,15 @@
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.6/616105b0831250a2e443447508e6a8b26bc466fb/lombok-1.18.6.jar" />
         </processorPath>
-        <module name="scouter-springboot-redis.api.main" />
         <module name="scouter-springboot-redis.common.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.6/616105b0831250a2e443447508e6a8b26bc466fb/lombok-1.18.6.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/2.1.4.RELEASE/631c55639500c180490a28093f24b008b95e1d2a/spring-boot-configuration-processor-2.1.4.RELEASE.jar" />
+        </processorPath>
+        <module name="scouter-springboot-redis.api.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8" />

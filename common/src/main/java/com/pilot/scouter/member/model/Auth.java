@@ -18,6 +18,6 @@ public class Auth {
     /**
      *  Password
      */
-    @NotNull(message = "2013")
+    @NotNull(message = "100")
     String pwd = "";
 }
