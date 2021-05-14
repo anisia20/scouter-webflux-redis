@@ -4,6 +4,7 @@ import com.pilot.scouter.staticstic.service.ApiService;
 import com.pilot.scouter.staticstic.service.ScoutJsnService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.http.codec.multipart.Part;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.nio.channels.AsynchronousFileChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
 @Log4j2
@@ -44,14 +53,23 @@ public class ScouterController {
      * @throws Exception
      */
 
-    @PostMapping(value = "/file/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<Object> FileUploadController(
-            @RequestPart("files") Flux<FilePart> filePartFux)  {
+    @PostMapping(value = "/file/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    public Mono<Object> FileUploadController  (
+            @RequestPart("files") FilePart filePart)  throws IOException{
+            log.debug(filePart.filename());
+            Path tempFile = Files.createTempFile("test", filePart.filename());
 
-        int n_res = mApiService.TrnsInfo2Redis(filePartFux);
+            AsynchronousFileChannel channel =
+                    AsynchronousFileChannel.open(tempFile, StandardOpenOption.WRITE);
+            DataBufferUtils.write(filePart.content(), channel, 0)
+                    .doOnComplete(() -> {
+                        log.debug("finish");
+                    })
+                    .subscribe();
 
-
-        return Mono.just("");
+            filePart.transferTo(tempFile.toFile());
+            log.debug(tempFile.toString());
+            return mApiService.trnsInfo2Redis(tempFile);
     }
 
     /**

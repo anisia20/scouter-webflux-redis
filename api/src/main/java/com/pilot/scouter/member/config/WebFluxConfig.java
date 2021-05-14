@@ -7,12 +7,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.server.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.nio.file.Paths;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
@@ -46,6 +50,22 @@ public class WebFluxConfig implements WebFluxConfigurer {
     public RouterFunction<ServerResponse> staticRouter() {
         return RouterFunctions
                 .resources("/**", new ClassPathResource("static/"));
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> fileUpload() {
+        RequestPredicate predicate = RequestPredicates.POST("/fileUpload").and(RequestPredicates.accept(MediaType.MULTIPART_FORM_DATA));
+        RouterFunction<ServerResponse> response = RouterFunctions.route(predicate, (request)->{
+            request.queryParams(); //이러한 방식으로 시도를 해 봅니다..
+            Mono<String> mapper = request.multipartData().map(it -> it.get("files"))
+                    .flatMapMany(Flux::fromIterable)
+                    .cast(FilePart.class)
+                    .flatMap(it -> it.transferTo(Paths.get("upload/" + it.filename())))
+                    .then(Mono.just("OK"));
+            Mono<ServerResponse> res = ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).body(BodyInserters.fromPublisher(mapper, String.class));
+            return res;
+        });
+        return response;
     }
 
 }
